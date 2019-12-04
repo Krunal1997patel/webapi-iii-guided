@@ -7,12 +7,13 @@ const server = express();
 
 
 function gateKeeper(req, res, next) {
-  // data can come in the body, url parameters, query string, headers
-  // new way of reading data sent by the client
-  const password = req.headers.password || '';
+  const password = req.headers.password
+
+
   if(!password) {
     return res.status(400).json({ message: 'please provide a password!!' });
   }
+
   if (password.toLowerCase() === 'mellon') {
     next();
   } else {
@@ -23,6 +24,7 @@ function gateKeeper(req, res, next) {
 
 server.use(helmet());
 server.use(express.json());
+server.use()
 
 server.use('/api/hubs', hubsRouter);
 
@@ -33,6 +35,10 @@ server.get('/', (req, res) => {
     <h2>Lambda Hubs API</h2>
     <p>Welcome${nameInsert} to the Lambda Hubs API</p>
     `);
+});
+
+server.get("/area51", gateKeeper, (req, res) => {
+  res.send(req.headers);
 });
 
 module.exports = server;
