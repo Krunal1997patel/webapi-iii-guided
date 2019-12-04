@@ -5,6 +5,11 @@ const hubsRouter = require('./hubs/hubs-router.js');
 
 const server = express();
 
+function logger(req, res, next) {
+  console.log(`${req.method} to ${req.originalUrl}`);
+  next();
+}
+
 
 function gateKeeper(req, res, next) {
   const password = req.headers.password
@@ -17,14 +22,14 @@ function gateKeeper(req, res, next) {
   if (password.toLowerCase() === 'mellon') {
     next();
   } else {
-    res.status(400).json({ you: 'cannot pass!!' });
+    res.status(400).json({ message: 'wrong password' });
   }
 }
 
 
 server.use(helmet());
 server.use(express.json());
-server.use()
+server.use(logger)
 
 server.use('/api/hubs', hubsRouter);
 
